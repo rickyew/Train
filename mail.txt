@@ -1,0 +1,41 @@
+yum install nagios nagios-plugins-all postfix cyrus-sasl-plain mailx
+htpasswd /etc/nagios/passwd nagiosadmin
+
+vi /etc/nagios/objects/contacts.cfg
+
+define contact {
+ ...
+	email 			example@domain
+ ...
+ }
+ 
+systemctl restart postfix
+systemctl enable postfix
+
+vi /etc/postfix/main.cf
+
+myhostname = hostname.example.com
+
+relayhost = [smtp.gmail.com]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt
+smtp_sasl_security_options = noanonymous
+smtp_sasl_tls_security_options = noanonymous
+
+vi /etc/postfix/sasl_passwd
+[smtp.gmail.com]:587 username:password
+
+postmap /etc/postfix/sasl_passwd
+
+chown root:postfix /etc/postfix/sasl_passwd*
+chmod 640 /etc/postfix/sasl_passwd*
+
+systemctl reload postfix
+
+echo "This is a test." | mail -s "test message" user@example.net
+
+tail -f /var/log/maillog
+
+
