@@ -1,0 +1,9 @@
+jenkins API
+  curl -X POST http://[user]:[token]@[jenkins-url]:8080/job/test/build
+  curl -X POST http://[user]:[token]@[jenkins-url]:8080/job/test/buildWithParameters?test=welcome
+  curl -X GET http://[user]:[token]@[jenkins-url]:8080/job/test/config.xml
+  CRUMB_NEW=$(curl -s 'http://[user]:[token]@[jenkins-url]:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+  curl -X POST 'http://[user]:[token]@[jenkins-url]:8080/createItem?name=[JOB_NAME]' --header "Content-Type: application/xml" -d @config.xml -H $CRUMB_NEW
+112d0665f6b7bc6ecc123da629b9e41a00
+
+http://aji:112d0665f6b7bc6ecc123da629b9e41a00@35.240.249.239:8080
